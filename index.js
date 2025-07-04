@@ -10,6 +10,7 @@ if (!process.env.FIREBASE_CONFIG_BASE64) {
 const serviceAccount = JSON.parse(
   Buffer.from(process.env.FIREBASE_CONFIG_BASE64, "base64").toString()
 );
+console.log("FIREBASE_CONFIG_BASE64:", process.env.FIREBASE_CONFIG_BASE64 ? "✅ Variable encontrada" : "❌ Variable NO encontrada");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
