@@ -3,7 +3,13 @@ const cors = require("cors");
 const admin = require("firebase-admin");
 
 // Configuración de Firebase Admin con credenciales desde variable de entorno
-const serviceAccount = JSON.parse(Buffer.from(process.env.FIREBASE_CONFIG_BASE64, "base64").toString());
+if (!process.env.FIREBASE_CONFIG_BASE64) {
+  throw new Error("La variable de entorno FIREBASE_CONFIG_BASE64 no está definida.");
+}
+
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.FIREBASE_CONFIG_BASE64, "base64").toString()
+);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
