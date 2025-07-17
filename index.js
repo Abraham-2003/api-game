@@ -37,7 +37,7 @@ app.post("/loginJugador", async (req, res) => {
     }
 
     const jugador = snapshot.docs[0].data();
-    const jugadorId = snapshot.docs[0].id; // ← UID del documento
+    const jugadorId = snapshot.docs[0].id; 
 
 
     if (jugador.contraseña !== contraseña) {
