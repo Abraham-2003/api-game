@@ -23,10 +23,10 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/loginJugador", async (req, res) => {
-  const { correo, contraseña } = req.body;
+  const { correo, contrasena } = req.body;
   
 
-  if (!correo || !contraseña)
+  if (!correo || !contrasena)
     return res.status(400).json({ error: "Correo y contraseña requeridos" });
 
   try {
@@ -40,7 +40,7 @@ app.post("/loginJugador", async (req, res) => {
     const jugadorId = snapshot.docs[0].id; 
 
 
-    if (jugador.contraseña !== contraseña) {
+    if (jugador.contrasena !== contrasena) {
       console.log("⚠️ Contraseña incorrecta");
       return res.status(401).json({ error: "Contraseña incorrecta" });
     }
@@ -99,7 +99,7 @@ app.post("/enviarCodigoRecuperacion", async (req, res) => {
   }
 });
 app.post("/verificarCodigo", async (req, res) => {
-  const { correo, codigoIngresado, nuevaContraseña } = req.body;
+  const { correo, codigoIngresado, nuevaContrasena } = req.body;
 
   try {
     const snapshot = await db.collection("jugadores").where("correo", "==", correo).get();
@@ -113,7 +113,7 @@ app.post("/verificarCodigo", async (req, res) => {
     }
 
     await db.collection("jugadores").doc(jugador.id).update({
-      contraseña: nuevaContraseña,
+      contrasena: nuevaContrasena,
       codigoRecuperacion: null,
       codigoGenerado: null
     });
@@ -127,14 +127,14 @@ app.post("/verificarCodigo", async (req, res) => {
 
 
 app.post("/registrarJugador", async (req, res) => {
-  const { nombre, correo, contraseña, confirmarContraseña, sede } = req.body;
+  const { nombre, correo, contrasena, confirmarContrasena, sede } = req.body;
 
-  console.log("📦 Datos recibidos:", { nombre, correo, contraseña, confirmarContraseña, sede });
+  console.log("📦 Datos recibidos:", { nombre, correo, contrasena, confirmarContrasena, sede });
 
-  if (!nombre || !correo || !contraseña || !confirmarContraseña || !sede)
+  if (!nombre || !correo || !contrasena || !confirmarContrasena || !sede)
     return res.status(400).json({ error: "Todos los campos son requeridos" });
 
-  if (contraseña !== confirmarContraseña)
+  if (contrasena !== confirmarContrasena)
     return res.status(400).json({ error: "Las contraseñas no coinciden" });
 
   try {
@@ -145,7 +145,7 @@ app.post("/registrarJugador", async (req, res) => {
 
     const userRecord = await admin.auth().createUser({
       email: correo,
-      password: contraseña,
+      password: contrasena,
       displayName: nombre,
     });
 
@@ -154,7 +154,7 @@ app.post("/registrarJugador", async (req, res) => {
     await db.collection("jugadores").doc(userRecord.uid).set({
       nombre,
       correo,
-      contraseña,
+      contrasena,
       sede,
       creado: admin.firestore.FieldValue.serverTimestamp(),
       juegos: {
